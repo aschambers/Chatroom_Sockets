@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
+      }
+      body { 
+        font: 13px Helvetica, Arial; 
+      }
+      form { 
+        background: #000; 
+        padding: 3px; 
+        position: fixed; 
+        bottom: 0; width: 100%; 
+      }
+      form input { 
+        border: 0; 
+        padding: 10px; 
+        width: 90%; 
+        margin-right: .5%; 
+      }
+      form button { 
+        width: 9%; 
+        background: rgb(130, 224, 255); 
+        border: none; 
+        padding: 10px; 
+      }
+      #messages { 
+        list-style-type: none; 
+        margin: 0; 
+        padding: 0; 
+      }
+      #messages li { 
+        padding: 5px 10px; 
+      }
+      #messages li:nth-child(odd) { 
+        background: #eee; 
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+  <!-- all of this needs to be after the body, very important, otherwise messages will not be sent to server! -->
+  <!-- load the socket.io client in our index page. -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- we need jquery to send and recieve any events -->
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <!-- declares socket variable that is passed as io from server.js -->
+  <!-- no variable is specified when io() is called, since it defaults to trying to connect to the host serving the page. -->
+  <script>
+  var socket = io();
+  // submits a message on form submission (entering text and hitting enter or send button) to the server.
+  $('form').submit(function(){
+    // emits message to server only (socket.emit).
+    socket.emit('chat message', $('#m').val());
+    // looks for css id="m" which is the input of hitting send button or hitting enter (We will print out chat message in index).
+    // that chat message we print out is in io.on('connection', function(socket) in server.js).
+    $('#m').val('');
+    return false;
+  });
+  // appends io.emit message to chat so everyone connected can see it!
+  socket.on('chat message', function(msg){
+    $('#messages').append($('<li>').text(msg));
+  });
+  </script>
+</html>
+
+
+
+
+
+
+
+
+
+
